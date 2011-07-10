@@ -37,7 +37,7 @@ public class LessCompiler {
                             @Override
                             public Object getDefaultValue(Class<?> aClass) {
                                 if (aClass == String.class) {
-                                    return "[Native object]";
+                                    return "[Native object: exports]";
                                 } else if (aClass == Number.class) {
                                     return Double.NaN;
                                 } else if (aClass == Boolean.class) {
@@ -65,7 +65,7 @@ public class LessCompiler {
                                         @Override
                                         public Object getDefaultValue(Class<?> aClass) {
                                             if (aClass == String.class) {
-                                                return "[Native object]";
+                                                return "[Native object: module " + key + "]";
                                             } else if (aClass == Number.class) {
                                                 return Double.NaN;
                                             } else if (aClass == Boolean.class) {
