@@ -19,7 +19,9 @@ public class Main {
         try {
             out.print(new LessCompiler().compile(source));
         } catch (LessCompileException e) {
-            System.err.println(e.getMessage());
+            System.err.println(e.toString());
+        } catch (LessCompileError e) {
+            System.err.println(e.toString());
         }
     }
 
