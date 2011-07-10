@@ -1,4 +1,4 @@
-package net.noiseinstitute.lessjs4java;
+package net.noiseinstitute.less;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.JavaScriptException;
@@ -15,7 +15,7 @@ public class LessCompiler {
 
     public LessCompiler() {
         ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream("net/noiseinstitute/lessjs4java/less.js");
+        InputStream inputStream = classLoader.getResourceAsStream("net/noiseinstitute/less/less.js");
         try {
             try {
                 Reader reader = new InputStreamReader(inputStream, "UTF-8");

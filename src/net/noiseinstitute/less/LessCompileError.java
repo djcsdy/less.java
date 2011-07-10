@@ -1,4 +1,4 @@
-package net.noiseinstitute.lessjs4java;
+package net.noiseinstitute.less;
 
 import org.mozilla.javascript.JavaScriptException;
 

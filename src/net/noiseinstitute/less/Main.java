@@ -1,4 +1,4 @@
-package net.noiseinstitute.lessjs4java;
+package net.noiseinstitute.less;
 
 import java.io.*;
 
@@ -7,7 +7,7 @@ public class Main {
     private static final int BUFFER_OFFSET = 0;
 
     public static void main(String[] args) throws FileNotFoundException {
-        new Main().execute(args, new FileInputStream("empty.less"), System.out);
+        new Main().execute(args, new FileInputStream("style.less"), System.out);
     }
 
     public void execute (String[] args, InputStream in, PrintStream out) {
