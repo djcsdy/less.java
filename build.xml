@@ -13,7 +13,7 @@
             <file file="less.js/lib/less/parser.js"/>
             <file file="less.js/lib/less/functions.js"/>
             <fileset dir="less.js/lib/less/tree" includes="*.js"/>
-            <file file="less.js/lib/tree.js"/>
+            <file file="less.js/lib/less/tree.js"/>
         </concat>
     </target>
 
