@@ -17,8 +17,16 @@ class LessCompileError extends Error {
         this.cause = cause;
     }
 
+    public LessCompileError (String message) {
+        super(message);
+    }
+
     @Override
     public String toString() {
-        return String.format("less.js internal error: %1$s\n%2$s", getMessage(), cause.getScriptStackTrace());
+        if (cause == null) {
+            return super.toString();
+        } else {
+            return String.format("less.js internal error: %1$s\n%2$s", getMessage(), cause.getScriptStackTrace());
+        }
     }
 }
