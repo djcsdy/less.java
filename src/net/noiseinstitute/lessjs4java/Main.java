@@ -1,16 +1,13 @@
 package net.noiseinstitute.lessjs4java;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 
 public class Main {
     private static final int BUFFER_SIZE = 262144;
     private static final int BUFFER_OFFSET = 0;
 
-    public static void main(String[] args) {
-        new Main().execute(args, System.in, System.out);
+    public static void main(String[] args) throws FileNotFoundException {
+        new Main().execute(args, new FileInputStream("empty.less"), System.out);
     }
 
     public void execute (String[] args, InputStream in, PrintStream out) {

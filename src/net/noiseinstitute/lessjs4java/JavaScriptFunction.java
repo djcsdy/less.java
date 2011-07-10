@@ -66,7 +66,15 @@ abstract class JavaScriptFunction implements Function {
     }
 
     public Object getDefaultValue (Class<?> aClass) {
-        return null;
+        if (aClass == String.class) {
+            return "[Native function]";
+        } else if (aClass == Number.class) {
+            return Double.NaN;
+        } else if (aClass == Boolean.class) {
+            return true;
+        } else {
+            return this;
+        }
     }
 
     public boolean hasInstance (Scriptable scriptable) {

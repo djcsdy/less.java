@@ -9,8 +9,7 @@
     <target name="less.js">
         <mkdir dir="${build.dir}/net/noiseinstitute/lessjs4java"/>
         <concat dest="${build.dir}/net/noiseinstitute/lessjs4java/less.js">
-            <file file="less.js/build/require.js"/>
-            <file file="less.js/build/ecma-5.js"/>
+            <file file="less.js/build/header.js"/>
             <file file="less.js/lib/less/parser.js"/>
             <file file="less.js/lib/less/functions.js"/>
             <fileset dir="less.js/lib/less/tree" includes="*.js"/>

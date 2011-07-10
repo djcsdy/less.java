@@ -3,6 +3,7 @@ package net.noiseinstitute.lessjs4java;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 
 import java.io.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -21,6 +22,63 @@ public class LessCompiler {
                     // context.setOptimizationLevel(-1); // Without this, Rhino hits a 64K bytecode limit and fails
                     try {
                         globalScope = context.initStandardObjects();
+
+
+                        final ScriptableObject exports = new ScriptableObject() {
+                            private static final long serialVersionUID = 1393015867036042893L;
+
+                            @Override
+                            public String getClassName () {
+                                return "Object";
+                            }
+
+                            @Override
+                            public Object getDefaultValue(Class<?> aClass) {
+                                if (aClass == String.class) {
+                                    return "[Native object]";
+                                } else if (aClass == Number.class) {
+                                    return Double.NaN;
+                                } else if (aClass == Boolean.class) {
+                                    return true;
+                                } else {
+                                    return this;
+                                }
+                            }
+                        };
+                        globalScope.put("exports", globalScope, exports);
+
+                        globalScope.put("require", globalScope, new JavaScriptFunction() {
+                            public Object call (Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
+                                final String key = ((String) args[0]).split("/", 2)[1];
+                                Object result = exports.get(key);
+                                if (result == null) {
+                                    result = new ScriptableObject() {
+                                        private static final long serialVersionUID = -3992320302483207465L;
+
+                                        @Override
+                                        public String getClassName () {
+                                            return "Object";
+                                        }
+
+                                        @Override
+                                        public Object getDefaultValue(Class<?> aClass) {
+                                            if (aClass == String.class) {
+                                                return "[Native object]";
+                                            } else if (aClass == Number.class) {
+                                                return Double.NaN;
+                                            } else if (aClass == Boolean.class) {
+                                                return true;
+                                            } else {
+                                                return this;
+                                            }
+                                        }
+                                    };
+                                    exports.put(key, exports, result);
+                                }
+                                return result;
+                            }
+                        });
+
                         context.evaluateReader(globalScope, reader, "less.js", 0, null);
                     } finally {
                         Context.exit();
@@ -45,9 +103,11 @@ public class LessCompiler {
             final AtomicReference<String> failureMessage = new AtomicReference<String>();
             final AtomicReference<String> output = new AtomicReference<String>();
 
+            compileScope.put("source", compileScope, source);
+
             compileScope.put("fail", compileScope, new JavaScriptFunction() {
                 public Object call (Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-                    failureMessage.set((String) args[0]);
+                    failureMessage.set(args[0].toString());
                     return null;
                 }
             });
@@ -61,17 +121,23 @@ public class LessCompiler {
 
             try {
                 context.evaluateString(compileScope,
-                        "new(less.Parser)()." +
+                        "new(exports.Parser)()." +
                                 "parse(source, function(err, tree) {" +
                                 "    if (err) {" +
                                 "        fail(err);" +
                                 "    } else {" +
+                                "        var css;" +
                                 "        try {" +
                                 "            css = tree.toCSS();" +
-                                "            writeOutput(css);" +
-                                "        } catch (err) {" +
-                                "            fail(err);" +
-                                "        })" +
+                                "        } catch (e) {" +
+                                "            if (e instanceof Error) {" +
+                                "                throw e;" +
+                                "            } else {" +
+                                "                fail(e);" +
+                                "                return;" +
+                                "            }" +
+                                "        }" +
+                                "        writeOutput(css);" +
                                 "    }" +
                                 "});",
                         "LessCompiler",
