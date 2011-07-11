@@ -6,25 +6,17 @@
     <property name="jar" location="less.java.jar"/>
     <property name="debug" value="false"/>
 
-    <target name="less.js">
-        <mkdir dir="${build.dir}/net/noiseinstitute/less"/>
-        <concat dest="${build.dir}/net/noiseinstitute/less/less.js">
-            <file file="less.js/build/header.js"/>
-            <file file="less.js/lib/less/parser.js"/>
-            <file file="less.js/lib/less/functions.js"/>
-            <fileset dir="less.js/lib/less/tree" includes="*.js"/>
-            <file file="less.js/lib/less/tree.js"/>
-        </concat>
-    </target>
-
     <target name="compile">
         <mkdir dir="${build.dir}"/>
         <javac srcdir="${src.dir}" destdir="${build.dir}"
                 classpath="${lib.dir}/js.jar"
                 debug="${debug}"/>
+        <copy todir="${build.dir}/net/noiseinstitute/less">
+            <fileset dir="less.js/lib" includes="**/*.js"/>
+        </copy>
     </target>
 
-    <target name="dist" depends="compile,less.js">
+    <target name="dist" depends="compile">
         <jar destfile="${jar}">
             <fileset dir="${build.dir}"/>
             <manifest>

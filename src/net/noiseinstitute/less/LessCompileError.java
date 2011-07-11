@@ -7,6 +7,10 @@ class LessCompileError extends Error {
 
     private JavaScriptException cause;
 
+    public LessCompileError (Throwable cause) {
+        super(cause);
+    }
+
     public LessCompileError (JavaScriptException cause) {
         super(cause.getValue().toString(), cause);
         this.cause = cause;

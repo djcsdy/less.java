@@ -14,6 +14,9 @@ public class ModuleLoader {
 
     public ModuleLoader() {
         modules = new HashMap<String, Module>();
+        modules.put("path", new PathModule());
+        modules.put("sys", new SysModule());
+        modules.put("fs", new FsModule());
     }
 
     public Module require(String modulePath) throws IOException {
