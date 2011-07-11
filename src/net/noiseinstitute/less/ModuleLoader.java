@@ -2,7 +2,6 @@ package net.noiseinstitute.less;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.WrappedException;
 
 import java.io.*;
 import java.util.HashMap;
@@ -38,16 +37,9 @@ public class ModuleLoader {
                         modules.put(modulePath, module);
                         scope.put("exports", scope, module);
 
-                        scope.put("require", scope, new JavaScriptFunction() {
-                            public Object call (Context cx, Scriptable scope, Scriptable thisObj, Object[] args) {
-                                final String modulePath = ((String) args[0]);
-                                try {
-                                    return require(modulePath);
-                                } catch (IOException e) {
-                                    throw new WrappedException(e);
-                                }
-                            }
-                        });
+                        scope.put("require", scope, new Require(this));
+
+                        scope.put("__dirname", scope, "");
 
                         context.evaluateReader(scope, reader, modulePath, 1, null);
 
