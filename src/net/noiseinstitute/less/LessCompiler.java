@@ -2,12 +2,15 @@ package net.noiseinstitute.less;
 
 import org.mozilla.javascript.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LessCompiler {
+    private static final String CHARSET = "UTF-8";
+
     private Module lessModule;
 
     public LessCompiler() {
@@ -19,9 +22,55 @@ public class LessCompiler {
         }
     }
 
+    public String compile (File file) throws IOException, LessCompileException {
+        return compile(file, new Options());
+    }
+
+    public String compile (File file, Options options) throws IOException, LessCompileException {
+        final FileResolver resolver = new DefaultFileResolver(file.getAbsoluteFile().getParentFile());
+        return compile(file, resolver, options);
+    }
+
+    public String compile (File file, FileResolver resolver) throws IOException, LessCompileException {
+        return compile(file, resolver, new Options());
+    }
+
+    public String compile (File file, FileResolver resolver, Options options) throws IOException, LessCompileException {
+        final String source = FileReader.readFile(file, CHARSET);
+        return compile(source, file.getName(), resolver, options);
+    }
+
+    public String compile (String source) throws LessCompileException {
+        return compile(source, null, new DefaultFileResolver(), new Options());
+    }
+
     public String compile (String source, Options options) throws LessCompileException {
+        return compile(source, null, new DefaultFileResolver(), options);
+    }
+
+    public String compile (String source, FileResolver resolver) throws LessCompileException {
+        return compile(source, null, resolver, new Options());
+    }
+
+    public String compile (String source, String filename) throws LessCompileException {
+        return compile(source, filename, new DefaultFileResolver(), new Options());
+    }
+
+    public String compile (String source, String filename, FileResolver resolver) throws LessCompileException {
+        return compile(source, filename, resolver, new Options());
+    }
+
+    public String compile (String source, String filename, Options options) throws LessCompileException {
+        return compile(source, filename, new DefaultFileResolver(), options);
+    }
+
+    public String compile (String source, String filename, FileResolver resolver, Options options)
+            throws LessCompileException {
         final NativeObject parserOptions = new NativeObject();
         parserOptions.put("optimization", parserOptions, options.optimizationLevel);
+        if (filename != null) {
+            parserOptions.put("filename", parserOptions, filename);
+        }
 
         final NativeObject toCssOptions = new NativeObject();
         toCssOptions.put("compress", toCssOptions, options.compress);
