@@ -27,7 +27,7 @@ public class LessCompiler {
     }
 
     public String compile (File file, Options options) throws IOException, LessCompileException {
-        final FileResolver resolver = new DefaultFileResolver(file.getAbsoluteFile().getParentFile());
+        final FileResolver resolver = new DefaultFileResolver(file);
         return compile(file, resolver, options);
     }
 

@@ -13,11 +13,22 @@ public class DefaultFileResolver implements FileResolver {
 
     public DefaultFileResolver (File path) {
         paths = new ArrayList<File>();
-        paths.add(path);
+        if (path.isDirectory()) {
+            paths.add(path);
+        } else if (path.exists()) {
+            paths.add(path.getParentFile());
+        }
     }
 
     public DefaultFileResolver (List<File> paths) {
-        this.paths = new ArrayList<File>(paths);
+        this.paths = new ArrayList<File>();
+        for (File path: paths) {
+            if (path.isDirectory()) {
+                this.paths.add(path);
+            } else if (path.exists()) {
+                this.paths.add(path.getParentFile());
+            }
+        }
     }
 
     public Reader resolve (String path) throws IOException {
