@@ -2,6 +2,7 @@ package net.noiseinstitute.less;
 
 import org.mozilla.javascript.JavaScriptException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LessCompileException extends Exception {
@@ -27,5 +28,37 @@ public class LessCompileException extends Exception {
         this.callExtract = callExtract;
         this.column = column;
         this.extract = extract;
+    }
+
+    public String getType () {
+        return type;
+    }
+
+    public String getFilename () {
+        return filename;
+    }
+
+    public int getIndex () {
+        return index;
+    }
+
+    public int getLine () {
+        return line;
+    }
+
+    public int getCallLine () {
+        return callLine;
+    }
+
+    public String getCallExtract () {
+        return callExtract;
+    }
+
+    public int getColumn () {
+        return column;
+    }
+
+    public List<String> getExtract () {
+        return new ArrayList<String>(extract);
     }
 }
