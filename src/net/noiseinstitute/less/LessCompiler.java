@@ -20,12 +20,18 @@ public class LessCompiler {
     }
 
     public String compile (String source, Options options) throws LessCompileException {
+        final NativeObject parserOptions = new NativeObject();
+        parserOptions.put("optimization", parserOptions, options.optimizationLevel);
+
+        final NativeObject toCssOptions = new NativeObject();
+        toCssOptions.put("compress", toCssOptions, options.compress);
+
         final AtomicReference<String> output = new AtomicReference<String>();
         final Context context = Context.enter();
         try {
             final Scriptable globalScope = context.initStandardObjects();
             final Scriptable parser = ((Function) lessModule.get("Parser"))
-                    .construct(context, globalScope, new Object[0]);
+                    .construct(context, globalScope, new Object[]{parserOptions});
             final Callable parse = (Callable) parser.get("parse", parser);
             final Object[] parseArgs = new Object[]{
                     source,
@@ -37,7 +43,7 @@ public class LessCompiler {
                             }
                             final Scriptable tree = (Scriptable) args[1];
                             final Callable toCss = (Callable) tree.get("toCSS", tree);
-                            output.set((String) toCss.call(cx, globalScope, tree, new Object[0]));
+                            output.set((String) toCss.call(cx, globalScope, tree, new Object[]{toCssOptions}));
                             return null;
                         }
                     }
