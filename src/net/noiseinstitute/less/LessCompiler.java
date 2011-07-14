@@ -19,7 +19,7 @@ public class LessCompiler {
         }
     }
 
-    public String compile (String source) throws LessCompileException {
+    public String compile (String source, Options options) throws LessCompileException {
         final AtomicReference<String> output = new AtomicReference<String>();
         final Context context = Context.enter();
         try {
